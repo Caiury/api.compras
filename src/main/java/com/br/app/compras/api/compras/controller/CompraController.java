@@ -1,5 +1,6 @@
 package com.br.app.compras.api.compras.controller;
 
+import com.br.app.compras.api.compras.DTO.CompraDTO;
 import com.br.app.compras.api.compras.entity.Compra;
 import com.br.app.compras.api.compras.service.CompraService;
 import jakarta.validation.Valid;
@@ -20,9 +21,9 @@ public class CompraController {
     private CompraService compraService;
 
     @PostMapping
-    public ResponseEntity<Compra> cadastrarCompra(@RequestBody @Valid Compra compra) {
+    public ResponseEntity<CompraDTO> cadastrarCompra(@RequestBody @Valid Compra compra) {
         try {
-            Compra novaCompra = compraService.cadastrarCompra(compra);
+            CompraDTO novaCompra = compraService.cadastrarCompra(compra);
             return ResponseEntity.status(201).body(novaCompra);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
@@ -30,18 +31,18 @@ public class CompraController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Compra>> pesquisarCompras(
+    public ResponseEntity<List<CompraDTO>> pesquisarCompras(
             @RequestParam(required = true) String cpfComprador,
             @RequestParam(required = true) String nomeProduto,
             @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
             @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim) {
 
-        List<Compra> compras = compraService.pesquisarCompras(cpfComprador, nomeProduto, dataInicio, dataFim);
+        List<CompraDTO> compras = compraService.pesquisarCompras(cpfComprador, nomeProduto, dataInicio, dataFim);
         return ResponseEntity.ok(compras);
     }
 
     @GetMapping("/relatorio")
-    public ResponseEntity<List<Compra>> relatorioCompras(
+    public ResponseEntity<List<CompraDTO>> relatorioCompras(
             @RequestParam String dataInicio,
             @RequestParam String dataFim) {
 
@@ -51,7 +52,7 @@ public class CompraController {
         LocalDate inicio = LocalDate.parse(dataInicio);
         LocalDate fim = LocalDate.parse(dataFim);
 
-        List<Compra> relatorio = compraService.relatorioCompras(inicio, fim);
+        List<CompraDTO> relatorio = compraService.relatorioCompras(inicio, fim);
         return ResponseEntity.ok(relatorio);
     }
 }
